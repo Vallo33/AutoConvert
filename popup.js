@@ -4,6 +4,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load saved state
     chrome.storage.local.get(['isImperial'], function(result) {
       toggleSwitch.checked = result.isImperial || false;
+      if (result.isImperial) {
+        // Only send message if it's already in imperial mode
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          if (tabs[0]) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+              action: 'toggleUnits',
+              isImperial: true
+            }).catch(() => {
+              // Ignore errors from tabs where content script isn't loaded
+            });
+          }
+        });
+      }
     });
     
     // Save state and trigger conversion when toggle changes
@@ -11,12 +24,16 @@ document.addEventListener('DOMContentLoaded', function() {
       const isImperial = this.checked;
       chrome.storage.local.set({ isImperial });
       
-      // Send message to active tab to trigger conversion
+      // Send message only to active tab
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action: 'toggleUnits',
-          isImperial: isImperial
-        });
+        if (tabs[0]) {
+          chrome.tabs.sendMessage(tabs[0].id, {
+            action: 'toggleUnits',
+            isImperial: isImperial
+          }).catch(() => {
+            // Ignore errors from tabs where content script isn't loaded
+          });
+        }
       });
     });
   });
