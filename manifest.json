@@ -1,10 +1,18 @@
 {
-  "manifest_version": 3,
-  "name": "Toggle Extension",
-  "version": "1.0",
-  "description": "A simple Chrome extension with a toggle switch",
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "permissions": ["storage"]
-}
+    "manifest_version": 3,
+    "name": "Unit Converter Extension",
+    "version": "1.0",
+    "description": "Converts between metric and US/imperial units on webpage",
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting"
+    ],
+    "content_scripts": [{
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }]
+  }
