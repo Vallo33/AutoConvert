@@ -130,6 +130,18 @@ function convertValue(value, unit, toImperial) {
   return null;
 }
 
+function formatNumber(value) {
+  // If the absolute value is very small (less than 0.01) and not zero, use scientific notation
+  if (Math.abs(value) < 0.01 && value !== 0) {
+    // Convert to scientific notation with 2 significant figures
+    const exp = Math.floor(Math.log10(Math.abs(value)));
+    const mantissa = value / Math.pow(10, exp);
+    return `${mantissa.toFixed(1)}e${exp}`;  // Changed from ×10^ to e
+  }
+  // Otherwise use fixed notation with 2 decimal places
+  return value.toFixed(2);
+}
+
 function convertText(text, toImperial) {
   // Normalize text
   text = text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
@@ -142,7 +154,7 @@ function convertText(text, toImperial) {
     const result = convertValue(value, unit, toImperial);
 
     if (result) {
-      return `${result.value.toFixed(2)}${space}${result.unit}`;
+      return `${formatNumber(result.value)}${space}${result.unit}`;  // Changed this line
     }
     return match;
   });
