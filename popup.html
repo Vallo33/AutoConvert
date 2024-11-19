@@ -16,6 +16,11 @@
             padding-bottom: 15px;
             border-bottom: 1px solid #ccc;
         }
+        .toggle-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -74,25 +79,60 @@
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
     <div class="main-toggle">
-        <span>Metric</span>
+        <span class="toggle-label">Metric</span>
         <label class="toggle-switch">
             <input type="checkbox" id="toggleSwitch">
             <span class="slider"></span>
         </label>
-        <span>US/Imperial</span>
+        <span class="toggle-label">US/Imperial</span>
     </div>
 
     <div id="settings-container" class="settings-container">
         <div class="setting-group">
+            <div class="setting-title">Length Conversions</div>
+            <select id="lengthConversion">
+                <option value="standard">Standard</option>
+                <option value="feet">All to Feet</option>
+                <option value="yards">All to Yards</option>
+                <option value="inches">All to Inches</option>
+                <option value="miles">All to Miles</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <div class="setting-title">Area Conversions</div>
+            <select id="areaConversion">
+                <option value="standard">Standard</option>
+                <option value="feet2">All to Square Feet</option>
+                <option value="yards2">All to Square Yards</option>
+                <option value="inches2">All to Square Inches</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <div class="setting-title">Volume Conversions</div>
+            <select id="volumeConversion">
+                <option value="standard">Standard</option>
+                <option value="feet3">All to Cubic Feet</option>
+                <option value="yards3">All to Cubic Yards</option>
+                <option value="inches3">All to Cubic Inches</option>
+                <option value="gallons">All to Gallons</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
             <div class="setting-title">Speed Conversions</div>
             <select id="speedConversion">
-                <option value="mph">Convert to Miles per hour (mph)</option>
-                <option value="ftps">Convert to Feet per second (ft/s)</option>
+                <option value="standard">Standard</option>
+                <option value="mph">All to Miles per Hour</option>
+                <option value="ftps">All to Feet per Second</option>
+                <option value="knots">All to Knots</option>
             </select>
         </div>
     </div>

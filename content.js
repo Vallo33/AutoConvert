@@ -1,5 +1,8 @@
 let currentSettings = {
-  speedConversion: 'mph'
+  speedConversion: 'standard',
+  lengthConversion: 'standard',
+  areaConversion: 'standard',
+  volumeConversion: 'standard'
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -7,7 +10,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       currentMode = request.isImperial;
       // Update settings if they're included in the message
       if (request.settings) {
-          currentSettings = { ...currentSettings, ...request.settings };
+          currentSettings = {
+              ...currentSettings,
+              ...request.settings
+          };
       }
       convertPage(currentMode);
       sendResponse({ success: true });
@@ -17,39 +23,192 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Unit conversion definitions
 const UnitSystem = {
   length: {
-    base: 'm',
-    units: {
-      'm': { toImperial: x => ({ value: x * 3.28084, unit: 'ft' }) },
-      'km': { toImperial: x => ({ value: x * 0.621371, unit: 'mi' }) },
-      'cm': { toImperial: x => ({ value: x * 0.393701, unit: 'in' }) },
-      'mm': { toImperial: x => ({ value: x * 0.03937, unit: 'in' }) }
-    }
+      base: 'm',
+      units: {
+          'm': {
+              toImperial: x => {
+                  switch(currentSettings.lengthConversion) {
+                      case 'feet': return { value: x * 3.28084, unit: 'ft' };
+                      case 'yards': return { value: x * 1.09361, unit: 'yd' };
+                      case 'inches': return { value: x * 39.3701, unit: 'in' };
+                      case 'miles': return { value: x * 0.000621371, unit: 'mi' };
+                      default: return { value: x * 3.28084, unit: 'ft' }; // standard
+                  }
+              }
+          },
+          'km': {
+              toImperial: x => {
+                  switch(currentSettings.lengthConversion) {
+                      case 'feet': return { value: x * 3280.84, unit: 'ft' };
+                      case 'yards': return { value: x * 1093.61, unit: 'yd' };
+                      case 'inches': return { value: x * 39370.1, unit: 'in' };
+                      case 'miles': return { value: x * 0.621371, unit: 'mi' };
+                      default: return { value: x * 0.621371, unit: 'mi' }; // standard
+                  }
+              }
+          },
+          'cm': {
+              toImperial: x => {
+                  switch(currentSettings.lengthConversion) {
+                      case 'feet': return { value: x * 0.0328084, unit: 'ft' };
+                      case 'yards': return { value: x * 0.0109361, unit: 'yd' };
+                      case 'inches': return { value: x * 0.393701, unit: 'in' };
+                      case 'miles': return { value: x * 0.00000621371, unit: 'mi' };
+                      default: return { value: x * 0.393701, unit: 'in' }; // standard
+                  }
+              }
+          },
+          'mm': {
+              toImperial: x => {
+                  switch(currentSettings.lengthConversion) {
+                      case 'feet': return { value: x * 0.00328084, unit: 'ft' };
+                      case 'yards': return { value: x * 0.00109361, unit: 'yd' };
+                      case 'inches': return { value: x * 0.0393701, unit: 'in' };
+                      case 'miles': return { value: x * 6.21371e-7, unit: 'mi' };
+                      default: return { value: x * 0.0393701, unit: 'in' }; // standard
+                  }
+              }
+          }
+      }
   },
   area: {
-    base: 'm²',
-    units: {
-      'm²': { toImperial: x => ({ value: x * 10.7639, unit: 'ft²' }) },
-      'm2': { toImperial: x => ({ value: x * 10.7639, unit: 'ft²' }) },
-      'sqm': { toImperial: x => ({ value: x * 10.7639, unit: 'sqft' }) },
-      'ha': { toImperial: x => ({ value: x * 2.47105, unit: 'acres' }) },
-      'cm²': { toImperial: x => ({ value: x * 0.155, unit: 'in²' }) },
-      'cm2': { toImperial: x => ({ value: x * 0.155, unit: 'in²' }) },
-      'mm²': { toImperial: x => ({ value: x * 0.00155, unit: 'in²' }) },
-      'mm2': { toImperial: x => ({ value: x * 0.00155, unit: 'in²' }) }
-    }
+      base: 'm²',
+      units: {
+          'm²': {
+              toImperial: x => {
+                  switch(currentSettings.areaConversion) {
+                      case 'feet2': return { value: x * 10.7639, unit: 'ft²' };
+                      case 'yards2': return { value: x * 1.19599, unit: 'yd²' };
+                      case 'inches2': return { value: x * 1550.0031, unit: 'in²' };
+                      default: return { value: x * 10.7639, unit: 'ft²' }; // standard
+                  }
+              }
+          },
+          'm2': {
+              toImperial: x => {
+                  switch(currentSettings.areaConversion) {
+                      case 'feet2': return { value: x * 10.7639, unit: 'ft²' };
+                      case 'yards2': return { value: x * 1.19599, unit: 'yd²' };
+                      case 'inches2': return { value: x * 1550.0031, unit: 'in²' };
+                      default: return { value: x * 10.7639, unit: 'ft²' }; // standard
+                  }
+              }
+          },
+          'sqm': {
+              toImperial: x => {
+                  switch(currentSettings.areaConversion) {
+                      case 'feet2': return { value: x * 10.7639, unit: 'ft²' };
+                      case 'yards2': return { value: x * 1.19599, unit: 'yd²' };
+                      case 'inches2': return { value: x * 1550.0031, unit: 'in²' };
+                      default: return { value: x * 10.7639, unit: 'sqft' }; // standard
+                  }
+              }
+          },
+          'ha': { toImperial: x => ({ value: x * 2.47105, unit: 'acres' }) }, // Keep acres as standard
+          'cm²': {
+              toImperial: x => {
+                  switch(currentSettings.areaConversion) {
+                      case 'feet2': return { value: x * 0.00107639, unit: 'ft²' };
+                      case 'yards2': return { value: x * 0.000119599, unit: 'yd²' };
+                      case 'inches2': return { value: x * 0.155, unit: 'in²' };
+                      default: return { value: x * 0.155, unit: 'in²' }; // standard
+                  }
+              }
+          },
+          'cm2': {
+              toImperial: x => {
+                  switch(currentSettings.areaConversion) {
+                      case 'feet2': return { value: x * 0.00107639, unit: 'ft²' };
+                      case 'yards2': return { value: x * 0.000119599, unit: 'yd²' };
+                      case 'inches2': return { value: x * 0.155, unit: 'in²' };
+                      default: return { value: x * 0.155, unit: 'in²' }; // standard
+                  }
+              }
+          },
+          'mm²': {
+              toImperial: x => {
+                  switch(currentSettings.areaConversion) {
+                      case 'feet2': return { value: x * 0.0000107639, unit: 'ft²' };
+                      case 'yards2': return { value: x * 0.00000119599, unit: 'yd²' };
+                      case 'inches2': return { value: x * 0.00155, unit: 'in²' };
+                      default: return { value: x * 0.00155, unit: 'in²' }; // standard
+                  }
+              }
+          },
+          'mm2': {
+              toImperial: x => {
+                  switch(currentSettings.areaConversion) {
+                      case 'feet2': return { value: x * 0.0000107639, unit: 'ft²' };
+                      case 'yards2': return { value: x * 0.00000119599, unit: 'yd²' };
+                      case 'inches2': return { value: x * 0.00155, unit: 'in²' };
+                      default: return { value: x * 0.00155, unit: 'in²' }; // standard
+                  }
+              }
+          }
+      }
   },
   volume: {
-    base: 'm³',
-    units: {
-      'm³': { toImperial: x => ({ value: x * 35.3147, unit: 'ft³' }) },
-      'm3': { toImperial: x => ({ value: x * 35.3147, unit: 'ft³' }) },
-      'm^3': { toImperial: x => ({ value: x * 35.3147, unit: 'ft³' }) },
-      'cm³': { toImperial: x => ({ value: x * 0.061024, unit: 'in³' }) },
-      'cm3': { toImperial: x => ({ value: x * 0.061024, unit: 'in³' }) },
-      'l': { toImperial: x => ({ value: x * 0.264172, unit: 'gal' }) },
-      'L': { toImperial: x => ({ value: x * 0.264172, unit: 'gal' }) },
-      'ml': { toImperial: x => ({ value: x * 0.033814, unit: 'fl oz' }) }
-    }
+      base: 'm³',
+      units: {
+          'm³': {
+              toImperial: x => {
+                  switch(currentSettings.volumeConversion) {
+                      case 'feet3': return { value: x * 35.3147, unit: 'ft³' };
+                      case 'yards3': return { value: x * 1.30795, unit: 'yd³' };
+                      case 'inches3': return { value: x * 61023.7, unit: 'in³' };
+                      case 'gallons': return { value: x * 264.172, unit: 'gal' };
+                      default: return { value: x * 35.3147, unit: 'ft³' }; // standard
+                  }
+              }
+          },
+          'm3': {
+              toImperial: x => {
+                  switch(currentSettings.volumeConversion) {
+                      case 'feet3': return { value: x * 35.3147, unit: 'ft³' };
+                      case 'yards3': return { value: x * 1.30795, unit: 'yd³' };
+                      case 'inches3': return { value: x * 61023.7, unit: 'in³' };
+                      case 'gallons': return { value: x * 264.172, unit: 'gal' };
+                      default: return { value: x * 35.3147, unit: 'ft³' }; // standard
+                  }
+              }
+          },
+          'm^3': {
+              toImperial: x => {
+                  switch(currentSettings.volumeConversion) {
+                      case 'feet3': return { value: x * 35.3147, unit: 'ft³' };
+                      case 'yards3': return { value: x * 1.30795, unit: 'yd³' };
+                      case 'inches3': return { value: x * 61023.7, unit: 'in³' };
+                      case 'gallons': return { value: x * 264.172, unit: 'gal' };
+                      default: return { value: x * 35.3147, unit: 'ft³' }; // standard
+                  }
+              }
+          },
+          'cm³': {
+              toImperial: x => {
+                  switch(currentSettings.volumeConversion) {
+                      case 'feet3': return { value: x * 0.0000353147, unit: 'ft³' };
+                      case 'yards3': return { value: x * 0.00000130795, unit: 'yd³' };
+                      case 'inches3': return { value: x * 0.061024, unit: 'in³' };
+                      case 'gallons': return { value: x * 0.000264172, unit: 'gal' };
+                      default: return { value: x * 0.061024, unit: 'in³' }; // standard
+                  }
+              }
+          },
+          'cm3': {
+              toImperial: x => {
+                  switch(currentSettings.volumeConversion) {
+                      case 'feet3': return { value: x * 0.0000353147, unit: 'ft³' };
+                      case 'yards3': return { value: x * 0.00000130795, unit: 'yd³' };
+                      case 'inches3': return { value: x * 0.061024, unit: 'in³' };
+                      case 'gallons': return { value: x * 0.000264172, unit: 'gal' };
+                      default: return { value: x * 0.061024, unit: 'in³' }; // standard
+                  }
+              }
+          },
+          'l': { toImperial: x => ({ value: x * 0.264172, unit: 'gal' }) }, // Keep standard
+          'L': { toImperial: x => ({ value: x * 0.264172, unit: 'gal' }) }, // Keep standard
+          'ml': { toImperial: x => ({ value: x * 0.033814, unit: 'fl oz' }) } // Keep standard
+      }
   },
   mass: {
     base: 'kg',
@@ -81,22 +240,26 @@ const UnitSystem = {
     units: {
         'm/s': {
             toImperial: x => {
-                if (currentSettings.speedConversion === 'ftps') {
-                    return { value: x * 3.28084, unit: 'ft/s' };
+                switch(currentSettings.speedConversion) {
+                    case 'mph': return { value: x * 2.23694, unit: 'mph' };
+                    case 'ftps': return { value: x * 3.28084, unit: 'ft/s' };
+                    case 'knots': return { value: x * 1.94384, unit: 'knots' };
+                    default: return { value: x * 2.23694, unit: 'mph' }; // standard
                 }
-                return { value: x * 2.23694, unit: 'mph' };
             }
         },
         'km/h': {
             toImperial: x => {
-                if (currentSettings.speedConversion === 'ftps') {
-                    return { value: x * 0.911344, unit: 'ft/s' };
+                switch(currentSettings.speedConversion) {
+                    case 'mph': return { value: x * 0.621371, unit: 'mph' };
+                    case 'ftps': return { value: x * 0.911344, unit: 'ft/s' };
+                    case 'knots': return { value: x * 0.539957, unit: 'knots' };
+                    default: return { value: x * 0.621371, unit: 'mph' }; // standard
                 }
-                return { value: x * 0.621371, unit: 'mph' };
             }
         }
     }
-  },
+},
   power: {
       base: 'kw',
       units: {
