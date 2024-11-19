@@ -1,81 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    body {
-      width: 200px;
-      padding: 10px;
-      font-family: Arial, sans-serif;
-    }
-    
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 10px 0;
-    }
-
-    .toggle-label {
-      font-size: 14px;
-      color: #666;
-    }
-    
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
-    
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #2196F3;
-      transition: .4s;
-      border-radius: 34px;
-    }
-    
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px;
-      width: 26px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-    
-    input:checked + .slider {
-      background-color: #4CAF50;
-    }
-    
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-  </style>
+    <title>Unit Converter</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+        }
+        .main-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .settings-container {
+            display: none;
+        }
+        .settings-container.show {
+            display: block;
+        }
+        .setting-group {
+            margin-bottom: 15px;
+        }
+        .setting-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-  <div class="toggle-container">
-    <span class="toggle-label">Metric</span>
-    <label class="toggle-switch">
-      <input type="checkbox" id="toggleSwitch">
-      <span class="slider"></span>
-    </label>
-    <span class="toggle-label">US/Imperial</span>
-  </div>
-  
-  <script src="popup.js"></script>
+    <div class="main-toggle">
+        <span>Metric</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="toggleSwitch">
+            <span class="slider"></span>
+        </label>
+        <span>US/Imperial</span>
+    </div>
+
+    <div id="settings-container" class="settings-container">
+        <div class="setting-group">
+            <div class="setting-title">Speed Conversions</div>
+            <select id="speedConversion">
+                <option value="mph">Convert to Miles per hour (mph)</option>
+                <option value="ftps">Convert to Feet per second (ft/s)</option>
+            </select>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
 </body>
 </html>

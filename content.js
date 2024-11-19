@@ -1,3 +1,19 @@
+let currentSettings = {
+  speedConversion: 'mph'
+};
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'toggleUnits') {
+      currentMode = request.isImperial;
+      // Update settings if they're included in the message
+      if (request.settings) {
+          currentSettings = { ...currentSettings, ...request.settings };
+      }
+      convertPage(currentMode);
+      sendResponse({ success: true });
+  }
+});
+
 // Unit conversion definitions
 const UnitSystem = {
   length: {
@@ -63,24 +79,38 @@ const UnitSystem = {
   speed: {
     base: 'm/s',
     units: {
-      'm/s': { toImperial: x => ({ value: x * 2.23694, unit: 'mph' }) },
-      'km/h': { toImperial: x => ({ value: x * 0.621371, unit: 'mph' }) }
+        'm/s': {
+            toImperial: x => {
+                if (currentSettings.speedConversion === 'ftps') {
+                    return { value: x * 3.28084, unit: 'ft/s' };
+                }
+                return { value: x * 2.23694, unit: 'mph' };
+            }
+        },
+        'km/h': {
+            toImperial: x => {
+                if (currentSettings.speedConversion === 'ftps') {
+                    return { value: x * 0.911344, unit: 'ft/s' };
+                }
+                return { value: x * 0.621371, unit: 'mph' };
+            }
+        }
     }
   },
   power: {
-    base: 'kw',
-    units: {
-      'kw': { toImperial: x => ({ value: x * 1.34102, unit: 'hp' }) },
-      'kW': { toImperial: x => ({ value: x * 1.34102, unit: 'hp' }) }
-    }
+      base: 'kw',
+      units: {
+          'kw': { toImperial: x => ({ value: x * 1.34102, unit: 'hp' }) },
+          'kW': { toImperial: x => ({ value: x * 1.34102, unit: 'hp' }) }
+      }
   },
   energy: {
-    base: 'kj',
-    units: {
-      'kj': { toImperial: x => ({ value: x * 0.947817, unit: 'BTU' }) },
-      'kJ': { toImperial: x => ({ value: x * 0.947817, unit: 'BTU' }) },
-      'kcal': { toImperial: x => ({ value: x * 3.96567, unit: 'BTU' }) }
-    }
+      base: 'kj',
+      units: {
+          'kj': { toImperial: x => ({ value: x * 0.947817, unit: 'BTU' }) },
+          'kJ': { toImperial: x => ({ value: x * 0.947817, unit: 'BTU' }) },
+          'kcal': { toImperial: x => ({ value: x * 3.96567, unit: 'BTU' }) }
+      }
   }
 };
 
